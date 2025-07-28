@@ -35,7 +35,7 @@ Make sure your Elasticsearch instance is running and accessible (e.g. at http://
 To generate sentence embeddings and index product data into Elasticsearch:
 
 ```bash
-poetry run python src/elacticsearch_demo/index_products.py
+poetry run python src/elacticsearch_demo/step1_index_products.py
 ```
 
 👉 This will:
@@ -43,21 +43,6 @@ poetry run python src/elacticsearch_demo/index_products.py
 - Generate vector embeddings using `all-MiniLM-L6-v2`
 - Create an Elasticsearch index named `amazon_products`
 - Bulk index all records with their embeddings
-
----
-
-## 🔍 Run Vector Search
-
-To search semantically (e.g. "Does the list have any building blocks toys?"):
-
-```bash
-poetry run python src/elacticsearch_demo/vector_search.py
-```
-
-This will:
-- Encode the query using the same transformer
-- Run a k-NN vector search in Elasticsearch
-- Return top matching product titles + descriptions based on semantic similarity
 
 ---
 

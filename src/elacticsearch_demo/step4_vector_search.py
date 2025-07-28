@@ -8,7 +8,7 @@ def main():
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
     # 2. Encode search query
-    query = "Does the list have any building blocks toys?"
+    query = "Interlocking bricks game"
     query_vector = model.encode(query, normalize_embeddings=True).tolist()
 
     # 3. Connect to Elasticsearch
