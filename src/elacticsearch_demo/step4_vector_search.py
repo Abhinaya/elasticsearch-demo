@@ -32,7 +32,7 @@ def main():
     )
 
     # 5. Show results
-    print("\n🔍 Top matching results:")
+    print("\n🔍 Top matching results for :", query)
     for hit in response["hits"]["hits"]:
         print(
             f"[{hit['_score']:.2f}] {hit['_source']['title']}: {hit['_source']['description'][:200]}..."
