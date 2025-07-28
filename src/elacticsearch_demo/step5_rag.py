@@ -13,7 +13,6 @@ if not grok_api_key:
     raise ValueError("Set env var GROK_API_KEY")
 
 # Simulated query
-query = "Are these earrings made of silver?"
 query = "Can Khadims Black Slip-On Shoes be washed with deteregent?"
 model = SentenceTransformer(MODEL_NAME)
 query_vector = model.encode(query).tolist()
@@ -31,8 +30,11 @@ response = es.search(index=INDEX_NAME, body={
 top_doc = response['hits']['hits'][0]['_source']
 retrieved_context = top_doc['title'] + "\n" + top_doc['description']
 
-print("Retrieved relevant information from reviews: ", retrieved_context)
-print("\n\b")
+print("\n=========== QUERY ==============")
+print(query)
+print("==================================\n\n")
+
+print("Retrieved relevant information from reviews: \n", retrieved_context)
 
 def make_groq_api_call(user_content: str):
     response = requests.post(
