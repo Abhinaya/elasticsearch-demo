@@ -14,7 +14,6 @@ def main():
     # 3. Connect to Elasticsearch
     es = Elasticsearch(
         "http://localhost:9200",
-        basic_auth=(os.getenv("ES_USERNAME"), os.getenv("ES_PASSWORD")),
     )
 
     # 4. Search using KNN

@@ -1,10 +1,8 @@
-import os
 from elasticsearch import Elasticsearch
 
 def main():
     es = Elasticsearch(
         "http://localhost:9200",
-        basic_auth=(os.getenv("ES_USERNAME"), os.getenv("ES_PASSWORD")),
     )
 
     query_text1 = "Lego blocks"
@@ -43,7 +41,7 @@ def main():
 
     print("\n📟 Top keyword search results for: " , query_text2)
     for hit in response["hits"]["hits"]:
-        print(f"[{hit['_score']:.2f}] {hit['_source']['title']}: {hit['_source']['description'][:200]}...")  
+        print(f"[{hit['_score']:.2f}] {hit['_source']['title']}: {hit['_source']['description'][:200]}...")
 
 if __name__ == "__main__":
     main()

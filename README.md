@@ -9,16 +9,39 @@ This project demonstrates how to build a vector search engine using:
 
 ## 📦 Installation
 
+### Option 1: Using Docker (Recommended)
+
+Start Elasticsearch and Kibana using Docker Compose:
+
+```bash
+# Start the services
+docker-compose up -d
+
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+```
+
+This will start:
+- **Elasticsearch** on `http://localhost:9200`
+- **Kibana** on `http://localhost:5601`
+
+### Option 2: Manual Installation
+
 Install dependencies using Poetry:
 
 ```bash
 poetry install
 ```
 
----
-
 ## 🔐 Set Up Elasticsearch Credentials
 
+### For Docker Setup
+No credentials needed - security is disabled for development.
+
+### For Manual Setup
 Export your Elasticsearch credentials as environment variables:
 
 ```bash
@@ -46,11 +69,41 @@ poetry run python src/elacticsearch_demo/step1_index_products.py
 
 ---
 
+## 🐳 Docker Services
+
+The `docker-compose.yml` includes:
+
+- **Elasticsearch 8.11.0**: Vector search engine
+- **Kibana 8.11.0**: Data visualization and management UI
+- **Persistent storage**: Data persists between container restarts
+- **Health checks**: Ensures services are ready before dependencies start
+
+### Useful Docker Commands
+
+```bash
+# Stop services
+docker-compose down
+
+# Stop and remove volumes (⚠️ deletes all data)
+docker-compose down -v
+
+# Restart services
+docker-compose restart
+
+# View service logs
+docker-compose logs elasticsearch
+docker-compose logs kibana
+```
+
+---
+
 ## 📚 Tech Stack
 
 - Python 3.10+
 - [Poetry](https://python-poetry.org/)
+- Docker & Docker Compose
 - Elasticsearch 8+
+- Kibana 8+
 - `sentence-transformers` (MiniLM-L6-v2)
 
 ---
