@@ -1,25 +1,28 @@
 # vector_search.py
 from sentence_transformers import SentenceTransformer
 from elasticsearch import Elasticsearch
-import os
+from elacticsearch_demo.constants import (
+    INDEX_NAME,
+    ELASTICSEARCH_URL,
+    MODEL_NAME,
+    DEFAULT_SEARCH_SIZE,
+)
 
 def main():
     # 1. Load embedding model
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = SentenceTransformer(MODEL_NAME)
 
     # 2. Encode search query
     query = "Interlocking bricks game"
     query_vector = model.encode(query, normalize_embeddings=True).tolist()
 
     # 3. Connect to Elasticsearch
-    es = Elasticsearch(
-        "http://localhost:9200",
-    )
+    es = Elasticsearch(ELASTICSEARCH_URL)
 
     # 4. Search using KNN
     response = es.search(
-        index="amazon_products",
-        size=5,
+        index=INDEX_NAME,
+        size=DEFAULT_SEARCH_SIZE // 2,
         body={
             "knn": {
                 "field": "embedding",
@@ -31,7 +34,7 @@ def main():
     )
 
     # 5. Show results
-    print("\n🔍 Top matching results for :", query)
+    print(f"\nTop matching results for: {query}")
     for hit in response["hits"]["hits"]:
         print(
             f"[{hit['_score']:.2f}] {hit['_source']['title']}: {hit['_source']['description'][:200]}..."

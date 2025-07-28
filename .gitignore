@@ -1,3 +1,4 @@
 /data/train_mini.csv
 .env
 .DS_Store
+__pycache__/

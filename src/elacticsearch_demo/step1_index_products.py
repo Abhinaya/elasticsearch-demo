@@ -3,16 +3,24 @@ from sentence_transformers import SentenceTransformer
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 import os
+from elacticsearch_demo.constants import (
+    INDEX_NAME,
+    ELASTICSEARCH_URL,
+    KIBANA_URL,
+    MODEL_NAME,
+    DATA_FILE_PATH,
+    INDEX_MAPPING,
+)
 
 
 def main():
     print("📄 Loading Amazon products dataset...")
-    amazon_products = pd.read_csv("data/amazon_product_reviews_1000_utf8.csv")
+    amazon_products = pd.read_csv(DATA_FILE_PATH)
     print(f"✅ Loaded {len(amazon_products)} products")
 
     # 2. Generate sentence embeddings
     print("🧠 Loading SentenceTransformer model...")
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = SentenceTransformer(MODEL_NAME)
     print("🔄 Generating embeddings...")
 
     amazon_products["embedding"] = amazon_products.apply(
@@ -26,42 +34,27 @@ def main():
 
     # 3. Connect to Elasticsearch
     print("🔌 Connecting to Elasticsearch...")
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch(ELASTICSEARCH_URL)
     print("✅ Connected to Elasticsearch.")
 
     # 4. Create index with dense_vector mapping
-    index_name = "amazon_products"
-    print(f"🗂️  Checking if index '{index_name}' exists...")
-    if not es.indices.exists(index=index_name):
-        print(f"📝 Creating index '{index_name}'...")
+    print(f"🗂️  Checking if index '{INDEX_NAME}' exists...")
+    if not es.indices.exists(index=INDEX_NAME):
+        print(f"📝 Creating index '{INDEX_NAME}'...")
         es.indices.create(
-            index=index_name,
-            body={
-                "mappings": {
-                    "properties": {
-                        "id": {"type": "integer"},
-                        "title": {"type": "text"},
-                        "description": {"type": "text"},
-                        "embedding": {
-                            "type": "dense_vector",
-                            "dims": 384,
-                            "index": True,
-                            "similarity": "cosine",
-                        },
-                    }
-                }
-            },
+            index=INDEX_NAME,
+            body=INDEX_MAPPING,
         )
-        print(f"✅ Index '{index_name}' created successfully")
+        print(f"✅ Index '{INDEX_NAME}' created successfully")
     else:
-        print(f"ℹ️  Index '{index_name}' already exists")
+        print(f"ℹ️ Index '{INDEX_NAME}' already exists")
 
     # 5. Bulk index the documents
     print("📤 Starting bulk indexing...")
     def generate_docs():
         for i, row in amazon_products.iterrows():
             yield {
-                "_index": index_name,
+                "_index": INDEX_NAME,
                 "_id": i,
                 "_source": {
                     "id": row["id"],
@@ -73,8 +66,8 @@ def main():
 
     bulk(es, generate_docs())
     print(f"✅ Successfully indexed {len(amazon_products)} products to Elasticsearch!")
-    print(f"🌐 You can now access Elasticsearch at: http://localhost:9200")
-    print(f"📊 View the index at: http://localhost:5601/app/management/data/index_management/indices/index_details?indexName=amazon_products")
+    print(f"🌐 You can now access Elasticsearch at: {ELASTICSEARCH_URL}")
+    print(f"📊 View the index at: http://localhost:5601/app/management/data/index_management/indices/index_details?indexName={INDEX_NAME}")
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,8 @@
 from sentence_transformers import SentenceTransformer, util
+from elacticsearch_demo.constants import MODEL_NAME
 
 # Initialize the model
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer(MODEL_NAME)
 
 # Enhanced corpus with more content for better demonstration
 corpus = [
